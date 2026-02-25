@@ -10,7 +10,8 @@ import org.junit.runner.RunWith;
         glue = "com.ecabs.web",
         plugin = {
                 "pretty",
-                "html:target/cucumber-web-report.html"
+                "html:target/cucumber-web-report.html",
+                "json:target/cucumber-web-report.json"
         }
 )
 

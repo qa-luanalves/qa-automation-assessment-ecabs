@@ -11,7 +11,8 @@ import org.junit.runner.RunWith;
         glue = "com.ecabs.api",
         plugin = {
                 "pretty",
-                "html:target/cucumber-api-report.html"
+                "html:target/cucumber-api-report.html",
+                "json:target/cucumber-api-report.json"
         }
 )
 
