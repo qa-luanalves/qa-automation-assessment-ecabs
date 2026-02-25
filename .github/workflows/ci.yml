@@ -37,9 +37,11 @@ jobs:
           OPEN_WEATHER_KEY: ${{ secrets.OPEN_WEATHER_KEY }}
 
       - name: Run Web Tests (Headless Chrome)
+        if: always()
         run: mvn test -Dtest=WebTestRunner -Dbrowser=chrome -Dheadless=true
 
       - name: Run Web Tests (Headless Firefox)
+        if: always()
         run: mvn test -Dtest=WebTestRunner -Dbrowser=firefox -Dheadless=true
 
       - name: Upload Cucumber Reports
