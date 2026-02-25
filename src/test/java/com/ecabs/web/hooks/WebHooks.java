@@ -11,11 +11,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-
 public class WebHooks {
 
     public static WebDriver driver;
@@ -62,7 +57,7 @@ public class WebHooks {
     }
 
     @After
-    public void tearDown(Scenario scenario) {
+    public void tearDown() {
 
         if (driver != null) {
             driver.quit();

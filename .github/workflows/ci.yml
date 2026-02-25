@@ -38,11 +38,11 @@ jobs:
 
       - name: Run Web Tests (Headless Chrome)
         if: always()
-        run: mvn test -Dtest=WebTestRunner -Dbrowser=chrome -Dheadless=true
+        run: mvn test -Dtest=WebTestRunner -Dbrowser=chrome -Dheadless=true -Dcucumber.plugin="pretty,html:target/cucumber-web-chrome.html,json:target/cucumber-web-chrome.json"
 
       - name: Run Web Tests (Headless Firefox)
         if: always()
-        run: mvn test -Dtest=WebTestRunner -Dbrowser=firefox -Dheadless=true
+        run: mvn test -Dtest=WebTestRunner -Dbrowser=firefox -Dheadless=true -Dcucumber.plugin="pretty,html:target/cucumber-web-firefox.html,json:target/cucumber-web-firefox.json"
 
       - name: Upload Cucumber Reports
         if: always()
@@ -51,6 +51,5 @@ jobs:
           name: cucumber-reports
           path: |
             target/cucumber-api-report.html
-            target/cucumber-api-report.json
-            target/cucumber-web-report.html
-            target/cucumber-web-report.json
+            target/cucumber-web-chrome.html
+            target/cucumber-web-firefox.html
