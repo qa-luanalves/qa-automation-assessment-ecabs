@@ -1,5 +1,7 @@
 # eCabs Assessment — QA Automation Framework
 
+[![QA Automation CI](https://github.com/qa-luanalves/qa-automation-assessment-ecabs/actions/workflows/ci.yml/badge.svg)](https://github.com/qa-luanalves/qa-automation-assessment-ecabs/actions/workflows/ci.yml)
+
 A Maven-based test automation framework covering both API and Web UI testing.
 
 | Layer | Technology |
