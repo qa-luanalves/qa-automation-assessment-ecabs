@@ -156,12 +156,12 @@ The project uses **GitHub Actions** (`.github/workflows/ci.yml`) for continuous 
 
 **Pipeline steps:**
 
-| Step | Command | Notes |
-|------|---------|-------|
-| Run API Tests | `mvn clean test -Dtest=ApiTestRunner` | Uses `OPEN_WEATHER_KEY` GitHub Secret |
-| Run Web Tests (Chrome) | `mvn test -Dtest=WebTestRunner -Dbrowser=chrome -Dheadless=true` | Runs even if API tests fail (`if: always()`) |
+| Step | Command                                                           | Notes |
+|------|-------------------------------------------------------------------|-------|
+| Run API Tests | `mvn clean test -Dtest=ApiTestRunner -DapiKey=YOUR_API_KEY`       | Uses `OPEN_WEATHER_KEY` GitHub Secret |
+| Run Web Tests (Chrome) | `mvn test -Dtest=WebTestRunner -Dbrowser=chrome -Dheadless=true`  | Runs even if API tests fail (`if: always()`) |
 | Run Web Tests (Firefox) | `mvn test -Dtest=WebTestRunner -Dbrowser=firefox -Dheadless=true` | Runs even if previous steps fail |
-| Upload Reports | `actions/upload-artifact@v4` | Artifact name: `cucumber-reports` |
+| Upload Reports | `actions/upload-artifact@v4`                                      | Artifact name: `cucumber-reports` |
 
 **Artifacts published:**
 - `target/cucumber-api-report.html`
