@@ -1,44 +1,53 @@
 # eCabs Assessment — QA Automation Framework
-
 [![QA Automation CI](https://github.com/qa-luanalves/qa-automation-assessment-ecabs/actions/workflows/ci.yml/badge.svg)](https://github.com/qa-luanalves/qa-automation-assessment-ecabs/actions/workflows/ci.yml)
 
 A Maven-based test automation framework covering both API and Web UI testing.
 
-| Layer | Technology |
-|-------|-----------|
-| Language | Java 17 |
-| Build | Maven 3.x |
-| BDD | Cucumber 7.14.0 |
-| API testing | REST Assured 5.3.0 |
-| Web UI testing | Selenium 4.18.1 |
-| Runner | JUnit 4 |
-| Driver management | WebDriverManager |
+## Overview
+
+This project contains an automated test suite for:
+
+-  Weather API (OpenWeather)
+-  Web UI Form Automation (DemoQA)
+
+Built using:
+
+- Java 17
+- Maven
+- Cucumber (BDD)
+- Selenium WebDriver
+- REST Assured
+- WebDriverManager
+- GitHub Actions (CI/CD)
 
 ---
 
 ## Project Structure
 
 ```
+.github/
+└── workflows/
+    └── ci.yml                   # GitHub Actions CI pipeline
 src/test/
 ├── java/com/ecabs/
 │   ├── api/
-│   │   ├── config/          # ApiConfig (base URL, API key)
-│   │   └── stepdefinitions/ # WeatherSteps, SecuritySteps, IntegrationSteps
+│   │   ├── config/              # ApiConfig (base URL, API key)
+│   │   └── stepdefinitions/     # WeatherSteps, SecuritySteps, IntegrationSteps
 │   ├── web/
-│   │   ├── hooks/           # WebHooks (browser setup / teardown)
-│   │   ├── pages/           # ContactPage (Page Object)
-│   │   └── stepdefinitions/ # ContactSteps
-│   ├── context/             # SharedResponse (shared state between steps)
+│   │   ├── hooks/               # WebHooks (browser setup / teardown)
+│   │   ├── pages/               # ContactPage (Page Object)
+│   │   └── stepdefinitions/     # ContactSteps
+│   ├── context/                 # SharedResponse (shared state between steps)
 │   └── runners/
-│       ├── ApiRunnerTest.java
-│       └── WebRunnerTest.java
+│       ├── ApiTestRunner.java
+│       └── WebTestRunner.java
 └── resources/features/
     ├── api/
-    │   ├── weather.feature     # Core weather endpoint scenarios
-    │   ├── security.feature    # Auth / injection scenarios
-    │   └── integration.feature # Cross-endpoint consistency check
+    │   ├── weather.feature      # Core weather endpoint scenarios
+    │   ├── security.feature     # Auth / injection scenarios
+    │   └── integration.feature  # Cross-endpoint consistency check
     └── web/
-        └── contact.feature     # DemoQA Practice Form scenarios
+        └── contact.feature      # DemoQA Practice Form scenarios
 ```
 
 ---
@@ -56,6 +65,12 @@ src/test/
 
 ## Configuration
 
+The OpenWeather API key must be provided as an environment variable.
+
+- Windows: `setx OPEN_WEATHER_KEY "your_api_key"`
+- Mac / Linux: `export OPEN_WEATHER_KEY="your_api_key"`
+- In CI, the key is stored securely as a GitHub Secret: **OPEN_WEATHER_KEY**
+  
 ### API
 
 | System property | Default | Description |
@@ -73,34 +88,19 @@ src/test/
 
 ## Running Tests
 
-### All tests
+### API Tests
 ```bash
-mvn clean test
+mvn clean test -Dtest=ApiTestRunner -DapiKey=YOUR_KEY_HERE
 ```
 
-### API tests only
+### Run Web Tests - Firefox (Headless)
 ```bash
-mvn clean test -Dtest=ApiRunnerTest
+mvn clean test -Dtest=WebTestRunner -Dbrowser=firefox -Dheadless=true
 ```
 
-### Web tests only
+### Run Web Tests - Chrome (Headless)
 ```bash
-mvn clean test -Dtest=WebRunnerTest
-```
-
-### Custom API key
-```bash
-mvn clean test -Dtest=ApiRunnerTest -DapiKey=YOUR_KEY_HERE
-```
-
-### Firefox, headless
-```bash
-mvn clean test -Dtest=WebRunnerTest -Dbrowser=firefox -Dheadless=true
-```
-
-### Chrome, headless
-```bash
-mvn clean test -Dtest=WebRunnerTest -Dheadless=true
+mvn clean test -Dtest=WebTestRunner -Dbrowser=chrome -Dheadless=true
 ```
 
 ---
@@ -109,11 +109,12 @@ mvn clean test -Dtest=WebRunnerTest -Dheadless=true
 
 After a test run, reports are written to the `target/` directory:
 
-| Report | Path |
-|--------|------|
-| API HTML report | `target/cucumber-api-report.html` |
-| Web HTML report | `target/cucumber-web-report.html` |
-| Surefire XML | `target/surefire-reports/` |
+| Report                | Path                               |
+|-----------------------|------------------------------------|
+| API HTML report       | `target/cucumber-api-report.html`  |
+| Web HTML (Chrome)     | `target/cucumber-web-chrome.html`  |
+| Web HTML (Firefox)    | `target/cucumber-web-firefox.html` |
+| Surefire XML          | `target/surefire-reports/`         |
 
 Open the `.html` files in any browser to view a full Cucumber scenario report.
 
@@ -142,6 +143,30 @@ Open the `.html` files in any browser to view a full Cucumber scenario report.
 **contact.feature**
 - Submit the form with valid data and verify the confirmation modal
 - Attempt submission without mandatory fields and verify required-field indicators
+
+---
+
+## CI/CD Pipeline
+
+The project uses **GitHub Actions** (`.github/workflows/ci.yml`) for continuous integration.
+
+**Triggers:** push or pull request to `main`, or manual dispatch (`workflow_dispatch`)
+
+**Environment:** Ubuntu latest · Java 17 (Temurin) · Maven dependency cache (keyed by `pom.xml`)
+
+**Pipeline steps:**
+
+| Step | Command | Notes |
+|------|---------|-------|
+| Run API Tests | `mvn clean test -Dtest=ApiTestRunner` | Uses `OPEN_WEATHER_KEY` GitHub Secret |
+| Run Web Tests (Chrome) | `mvn test -Dtest=WebTestRunner -Dbrowser=chrome -Dheadless=true` | Runs even if API tests fail (`if: always()`) |
+| Run Web Tests (Firefox) | `mvn test -Dtest=WebTestRunner -Dbrowser=firefox -Dheadless=true` | Runs even if previous steps fail |
+| Upload Reports | `actions/upload-artifact@v4` | Artifact name: `cucumber-reports` |
+
+**Artifacts published:**
+- `target/cucumber-api-report.html`
+- `target/cucumber-web-chrome.html`
+- `target/cucumber-web-firefox.html`
 
 ---
 

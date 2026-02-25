@@ -32,9 +32,7 @@ jobs:
             ${{ runner.os }}-maven
 
       - name: Run API Tests
-        run: mvn clean test -Dtest=ApiTestRunner
-        env:
-          OPEN_WEATHER_KEY: ${{ secrets.OPEN_WEATHER_KEY }}
+        run: mvn clean test -Dtest=ApiTestRunner -DapiKey=${{ secrets.OPEN_WEATHER_KEY }}
 
       - name: Run Web Tests (Headless Chrome)
         if: always()
