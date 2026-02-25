@@ -9,7 +9,7 @@ on:
 
 jobs:
   ci-tests:
-    name: Setup and Run api and web tests
+    name: Setup, run api and web tests and publish report
     runs-on: ubuntu-latest
 
     steps:
